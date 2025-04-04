@@ -70,11 +70,16 @@ class SystemDiagnostics:
         env_vars = dict(os.environ)
         self.system_info['env_variables'] = env_vars
 
+    def get_disk_partitions(self):
+        partitions = psutil.disk_partitions()
+        self.system_info['disk_partitions'] = partitions
+
 diag = SystemDiagnostics()
 diag.get_os_info()
 diag.get_cpu_info()
 diag.get_ram_info()
 diag.get_top_processes()
 diag.get_env_variables()
+diag.get_disk_partitions()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
