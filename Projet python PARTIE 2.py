@@ -52,8 +52,14 @@ class SystemDiagnostics:
         cpu_freq = psutil.cpu_freq().max
         self.system_info['cpu'] = f"{cpu_info}, Cores: {cpu_count}, Max Frequency: {cpu_freq}MHz"
 
+    def get_ram_info(self):
+        ram = psutil.virtual_memory()
+        total_ram = ram.total / (1024 ** 3) # Conversion en GB
+        self.system_info['ram'] = f"{total_ram:.2f} GB"
+
 diag = SystemDiagnostics()
 diag.get_os_info()
 diag.get_cpu_info()
+diag.get_ram_info()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
