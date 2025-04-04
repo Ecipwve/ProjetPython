@@ -73,6 +73,22 @@ class SystemDiagnostics:
     def get_disk_partitions(self):
         partitions = psutil.disk_partitions()
         self.system_info['disk_partitions'] = partitions
+    
+    def get_disk_usage(self):
+        usage = []
+        for partition in psutil.disk_partitions():
+            try:
+                usage_info = psutil.disk_usage(partition.mountpoint)
+                usage.append({
+                    'device': partition.device,
+                    'total': usage_info.total,
+                    'used': usage_info.used,
+                    'free': usage_info.free,
+                    'percent':usage_info.percent
+                })
+            except PermissionError:
+                continue
+        self.system_info['disk_usage'] = usage
 
 diag = SystemDiagnostics()
 diag.get_os_info()
@@ -81,5 +97,6 @@ diag.get_ram_info()
 diag.get_top_processes()
 diag.get_env_variables()
 diag.get_disk_partitions()
+diag.get_disk_usage()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
