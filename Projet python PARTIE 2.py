@@ -90,6 +90,10 @@ class SystemDiagnostics:
                 continue
         self.system_info['disk_usage'] = usage
 
+    def get_network_interfaces(self):
+        interfaces = list(psutil.net_if_addrs().keys())
+        self.system_info['network_interfaces'] = interfaces
+
 diag = SystemDiagnostics()
 diag.get_os_info()
 diag.get_cpu_info()
@@ -98,5 +102,6 @@ diag.get_top_processes()
 diag.get_env_variables()
 diag.get_disk_partitions()
 diag.get_disk_usage()
+diag.get_network_interfaces()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
