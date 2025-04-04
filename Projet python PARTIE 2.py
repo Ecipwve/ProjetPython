@@ -4,6 +4,7 @@ import json
 import platform
 import psutil
 import os
+import pandas as pd
 from datetime import datetime
 
 class LogProcessor:
@@ -111,10 +112,36 @@ class SystemDiagnostics:
         self.get_boot_time()
         return self.system_info
     
-# Test utilisation SystemDiagnostics
+class ExcelExporter:
+    def __init__(self, logs, system_info):
+        self.logs = logs
+        self.system_info = system_info
+
+    def export_to_excel(self, file_name):
+        with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+            #Export de logs
+            logs_df = pd.DataFrame(self.logs)
+            logs_df.to_excel(writer, sheet_name='logs', index=False)
+
+            #Export info système
+            system_info_df = pd.DataFrame(list(self.system_info.items()), columns=['Metric', 'Value'])
+            system_info_df.to_excel(writer, sheet_name='System Status', index=False)
+
 if __name__ == "__main__":
+    file_path = input("Veuillez entrer le chemin du fichier JSON : ")
+
+    # Process logs
+    processor = LogProcessor()
+    data = processor.read_json(file_path)
+    processor.extract_logs(data)
+    logs = processor.get_logs()
+
+    # Collect system diagnostics
     diagnostics = SystemDiagnostics()
     system_info = diagnostics.collect_all_info()
-    
-    for key, value in system_info.items():
-        print(f"{key}: {value}")
+
+    # Export to Excel
+    exporter = ExcelExporter(logs, system_info)
+    exporter.export_to_excel('system_logs_and_diagnostics.xlsx')
+
+    print("Les données ont été exportées avec succès dans 'system_logs_and_diagnostics.xlsx'.")
