@@ -26,9 +26,16 @@ class SystemDiagnostics:
     def get_top_processes(self):
         processes = []
         for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
-            processes.append(proc.info)
-        processes.sort(key=lambda p: p['cpu_percent'], reverse=True)
-        top_processes = processes[:5]
+            try:
+                process_info = proc.info
+                process_info['cpu_percent'] = f"{process_info['cpu_percent']:.2f} %"
+                process_info['memory_percent'] = f"{process_info['memory_percent']:.2f} %"
+                processes.append(process_info)
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                continue
+        # Tri par CPU usage
+        processes.sort(key=lambda p: float(p['cpu_percent'].strip(' %')), reverse=True)
+        top_processes = processes[:5]  # Top 5 des process
         self.system_info['top_processes'] = top_processes
     
     def get_env_variables(self):
@@ -37,7 +44,8 @@ class SystemDiagnostics:
 
     def get_disk_partitions(self):
         partitions = psutil.disk_partitions()
-        self.system_info['disk_partitions'] = partitions
+        partition_names = [partition.device for partition in partitions]
+        self.system_info['disk_partitions'] = partition_names
     
     def get_disk_usage(self):
         usage = []
@@ -74,3 +82,11 @@ class SystemDiagnostics:
         self.get_network_interfaces()
         self.get_boot_time()
         return self.system_info
+
+if __name__ == "__main__":
+    diagnostics = SystemDiagnostics()
+    system_info = diagnostics.collect_all_info()
+
+    # Affichage des informations système
+    for key, value in system_info.items():
+        print(f"{key}: {value}")
