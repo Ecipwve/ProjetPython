@@ -83,10 +83,3 @@ class SystemDiagnostics:
         self.get_boot_time()
         return self.system_info
 
-if __name__ == "__main__":
-    diagnostics = SystemDiagnostics()
-    system_info = diagnostics.collect_all_info()
-
-    # Affichage des informations système
-    for key, value in system_info.items():
-        print(f"{key}: {value}")
