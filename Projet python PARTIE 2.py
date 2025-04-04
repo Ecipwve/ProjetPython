@@ -4,6 +4,7 @@ import json
 import platform
 import psutil
 import os
+from datetime import datetime
 
 class LogProcessor:
     def __init__(self):
@@ -93,6 +94,10 @@ class SystemDiagnostics:
     def get_network_interfaces(self):
         interfaces = list(psutil.net_if_addrs().keys())
         self.system_info['network_interfaces'] = interfaces
+    
+    def get_boot_time(self):
+        boot_time = datetime.fromtimestamp(psutil.boot_time()).strftime("%H:%M:%S")
+        self.system_info['boot_time'] = boot_time
 
 diag = SystemDiagnostics()
 diag.get_os_info()
@@ -103,5 +108,6 @@ diag.get_env_variables()
 diag.get_disk_partitions()
 diag.get_disk_usage()
 diag.get_network_interfaces()
+diag.get_boot_time()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
