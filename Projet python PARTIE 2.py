@@ -99,15 +99,22 @@ class SystemDiagnostics:
         boot_time = datetime.fromtimestamp(psutil.boot_time()).strftime("%H:%M:%S")
         self.system_info['boot_time'] = boot_time
 
-diag = SystemDiagnostics()
-diag.get_os_info()
-diag.get_cpu_info()
-diag.get_ram_info()
-diag.get_top_processes()
-diag.get_env_variables()
-diag.get_disk_partitions()
-diag.get_disk_usage()
-diag.get_network_interfaces()
-diag.get_boot_time()
-for key, value in diag.system_info.items():
-    print(f"{key}: {value}")
+    def collect_all_info(self):
+        self.get_os_info()
+        self.get_cpu_info()
+        self.get_ram_info()
+        self.get_top_processes()
+        self.get_env_variables()
+        self.get_disk_partitions()
+        self.get_disk_usage()
+        self.get_network_interfaces()
+        self.get_boot_time()
+        return self.system_info
+    
+# Test utilisation SystemDiagnostics
+if __name__ == "__main__":
+    diagnostics = SystemDiagnostics()
+    system_info = diagnostics.collect_all_info()
+    
+    for key, value in system_info.items():
+        print(f"{key}: {value}")
