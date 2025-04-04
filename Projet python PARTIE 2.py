@@ -1,4 +1,7 @@
+import sys # 
+sys.path.append(r"C:\Users\aresv\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages")
 import json
+import platform
 
 class LogProcessor:
     def __init__(self):
@@ -29,19 +32,19 @@ class LogProcessor:
                     "station_name": source.get('agent', {}).get('name', 'Unknown station')
                 }
                 self.logs.append(log_entry)
-        print(f"{len(self.logs)} logs extraits.")
 
     def get_logs(self):
         return self.logs
 
-# Exemple d'utilisation
-if __name__ == "__main__":
-    file_path = input("Veuillez entrer le chemin du fichier JSON : ")
-    processor = LogProcessor()
-    data = processor.read_json(file_path)
-    processor.extract_logs(data)
-    logs = processor.get_logs()
+class SystemDiagnostics:
+    def __init__(self):
+        self.system_info = {}
 
-    # Afficher les logs extraits
-    for log in logs:
-        print(f"Log Level: {log['log_level']}, Message: {log['message']}, Station: {log['station_name']}")
+    def get_os_info(self):
+        os_info = platform.system()
+        os_version = platform.version()
+        self.system_info['os'] = f"{os_info} {os_version}"
+
+diag = SystemDiagnostics()
+diag.get_os_info()
+print(diag.system_info)
