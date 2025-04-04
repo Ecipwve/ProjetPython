@@ -57,9 +57,18 @@ class SystemDiagnostics:
         total_ram = ram.total / (1024 ** 3) # Conversion en GB
         self.system_info['ram'] = f"{total_ram:.2f} GB"
 
+    def get_top_processes(self):
+        processes = []
+        for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+            processes.append(proc.info)
+        processes.sort(key=lambda p: p['cpu_percent'], reverse=True)
+        top_processes = processes[:5]
+        self.system_info['top_processes'] = top_processes
+
 diag = SystemDiagnostics()
 diag.get_os_info()
 diag.get_cpu_info()
 diag.get_ram_info()
+diag.get_top_processes()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
