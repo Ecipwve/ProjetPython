@@ -1,5 +1,6 @@
-import psutil
+import os
 import platform
+import psutil
 from datetime import datetime
 
 class SystemDiagnostics:
