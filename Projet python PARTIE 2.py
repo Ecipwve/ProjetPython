@@ -3,6 +3,7 @@ sys.path.append(r"C:\Users\aresv\AppData\Local\Packages\PythonSoftwareFoundation
 import json
 import platform
 import psutil
+import os
 
 class LogProcessor:
     def __init__(self):
@@ -64,11 +65,16 @@ class SystemDiagnostics:
         processes.sort(key=lambda p: p['cpu_percent'], reverse=True)
         top_processes = processes[:5]
         self.system_info['top_processes'] = top_processes
+    
+    def get_env_variables(self):
+        env_vars = dict(os.environ)
+        self.system_info['env_variables'] = env_vars
 
 diag = SystemDiagnostics()
 diag.get_os_info()
 diag.get_cpu_info()
 diag.get_ram_info()
 diag.get_top_processes()
+diag.get_env_variables()
 for key, value in diag.system_info.items():
     print(f"{key}: {value}")
