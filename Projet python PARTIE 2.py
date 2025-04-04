@@ -2,6 +2,7 @@ import sys #
 sys.path.append(r"C:\Users\aresv\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages")
 import json
 import platform
+import psutil
 
 class LogProcessor:
     def __init__(self):
@@ -44,7 +45,15 @@ class SystemDiagnostics:
         os_info = platform.system()
         os_version = platform.version()
         self.system_info['os'] = f"{os_info} {os_version}"
+    
+    def get_cpu_info(self):
+        cpu_info = platform.processor()
+        cpu_count = psutil.cpu_count(logical=False)
+        cpu_freq = psutil.cpu_freq().max
+        self.system_info['cpu'] = f"{cpu_info}, Cores: {cpu_count}, Max Frequency: {cpu_freq}MHz"
 
 diag = SystemDiagnostics()
 diag.get_os_info()
-print(diag.system_info)
+diag.get_cpu_info()
+for key, value in diag.system_info.items():
+    print(f"{key}: {value}")
